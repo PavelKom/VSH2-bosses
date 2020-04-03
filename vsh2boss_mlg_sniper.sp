@@ -126,9 +126,9 @@ public Plugin myinfo = {
 
 /**
 TODO:
-	Add second live
+	Add second live | DONE | Not tested!!!
 	Add screamer	(rage_overlay)
-	Add Mnt dew can ragdoll drop	(special_dropprop)
+	Add Mnt dew can ragdoll drop	(spawn model on kill) | DONE | Not tested!!!
 	Add slowmo (maybe not)
 **/
 
@@ -341,7 +341,7 @@ public Action MLGSniper_OnBossCalcHealth(const VSH2Player player, int& max_healt
 	
 	if (max_health < 1500 && boss_count == 1)
 		max_health = 1500;
-	return Plugin_Continue;
+	return Plugin_Changed;
 }
 
 public void MLGSniper_OnBossPlayIntro(const VSH2Player player)
@@ -367,6 +367,8 @@ public void MLGSniper_OnPlayerKilled(const VSH2Player attacker, const VSH2Player
 		attacker.SetPropInt("iKills", 0);
 	}
 	else attacker.SetPropFloat("flKillSpree", curtime+5.0);
+	
+	SpawnModelOnKill(victim, event, MtnDewModel);
 }
 
 public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player victim, Event event)
@@ -588,4 +590,65 @@ stock int SetWeaponAmmo(const int weapon, const int ammo)
 public int HintPanel(Menu menu, MenuAction action, int param1, int param2)
 {
 	return;
+}
+
+///From FF2 plugin ff2_1st_set_abilities
+stock void SpawnModelOnKill(const VSH2Player victim, Event event, const char[] model, float duration = 0.0)
+{
+	if(model[0]!='\0')
+	{
+		
+		LogError("[MLG Sniper] SpawnModelOnKill: Empty model name!");
+		return;
+	}
+	if(!IsModelPrecached(model))
+	{
+		if(!FileExists(model, true))
+		{
+			LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' doesn't exist!", model);
+			return;
+		}
+		LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' isn't precached!", model);
+		return;
+	}
+	CreateTimer(0.01, Timer_RemoveRagdoll, GetEventInt(event, "userid"), TIMER_FLAG_NO_MAPCHANGE);
+	
+	int client=GetClientOfUserId(GetEventInt(event, "userid"));
+	int prop=CreateEntityByName("prop_physics_override");
+	if(IsValidEntity(prop))
+	{
+		SetEntityModel(prop, model);
+		SetEntityMoveType(prop, MOVETYPE_VPHYSICS);
+		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
+		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 16);
+		DispatchSpawn(prop);
+		
+		float position[3];
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
+		position[2]+=20;
+		TeleportEntity(prop, position, NULL_VECTOR, NULL_VECTOR);
+		if(duration>0.5)
+		{
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+}
+
+public Action Timer_RemoveRagdoll(Handle timer, any userid)
+{
+	int client=GetClientOfUserId(userid);
+	int ragdoll;
+	if(client>0 && (ragdoll=GetEntPropEnt(client, Prop_Send, "m_hRagdoll"))>MaxClients)
+	{
+		AcceptEntityInput(ragdoll, "Kill");
+	}
+}
+
+public Action Timer_RemoveEntity(Handle timer, any entid)
+{
+	int entity=EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		AcceptEntityInput(entity, "Kill");
+	}
 }
