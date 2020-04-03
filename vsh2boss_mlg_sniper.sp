@@ -88,6 +88,10 @@ char MLGSniperWin[][] = {
 	"freak_fortress_2/mlgsniper/mlgsniper_win4.mp3"
 };
 
+char MLGSniperLostLive[][] = {
+	"freak_fortress_2/mlgsniper/mlgsniper_lostlife.mp3"
+};
+
 char MLGSniperThemes[][] = {
 	"freak_fortress_2/mlgsniper/mlgsniper_bgm.mp3"
 };
@@ -125,6 +129,7 @@ TODO:
 	Add second live
 	Add screamer	(rage_overlay)
 	Add Mnt dew can ragdoll drop	(special_dropprop)
+	Add slowmo (maybe not)
 **/
 
 int g_iMLGSniperID;
@@ -209,6 +214,9 @@ public void LoadVSH2Hooks()
 	
 	if( !VSH2_HookEx(OnSoundHook, MLGSniper_OnSoundHook) )
 		LogError("Error loading OnSoundHook forwards for MLGSniper subplugin.");
+	
+	if( !VSH2_HookEx(OnBossCalcHealth, MLGSniper_OnBossCalcHealth) )
+		LogError("Error loading OnBossCalcHealth forwards for MLGSniper subplugin.");
 }
 
 
@@ -231,6 +239,7 @@ public void MLGSniper_OnCallDownloads()
 	DownloadSoundList(MLGSniperKill, sizeof(MLGSniperKill));
 	DownloadSoundList(MLGSniperSpree, sizeof(MLGSniperSpree));
 	DownloadSoundList(MLGSniperWin, sizeof(MLGSniperWin));
+	DownloadSoundList(MLGSniperLostLive, sizeof(MLGSniperLostLive));
 	DownloadSoundList(MLGSniperThemes, sizeof(MLGSniperThemes));
 	
 	PrecacheSoundList(MLGSniperStab, sizeof(MLGSniperStab));
@@ -322,6 +331,19 @@ public void MLGSniper_OnBossInitialized(const VSH2Player player)
 	SetEntProp(player.index, Prop_Send, "m_iClass", view_as<int>(TFClass_Sniper));
 }
 
+public Action MLGSniper_OnBossCalcHealth(const VSH2Player player, int& max_health, const int boss_count, const int red_players)
+{
+	if( !IsMLGSniper(player) )
+		return Plugin_Continue;
+	player.SetPropInt("iLives", 2);
+	
+	max_health = RoundFloat( Pow((((240.0)+red_players)*(red_players)), 1.0341)+1023 ) / (boss_count);
+	
+	if (max_health < 1500 && boss_count == 1)
+		max_health = 1500;
+	return Plugin_Continue;
+}
+
 public void MLGSniper_OnBossPlayIntro(const VSH2Player player)
 {
 	if( !IsMLGSniper(player) )
@@ -350,8 +372,25 @@ public void MLGSniper_OnPlayerKilled(const VSH2Player attacker, const VSH2Player
 public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player victim, Event event)
 {
 	int damage = event.GetInt("damageamount");
+	
 	if( IsMLGSniper(victim) && victim.GetPropInt("bIsBoss") )
+	{
 		victim.GiveRage(damage);
+		
+		///Multilive logic (NOT TESTED!!!)
+		
+		if (damage >= victim.GetPropInt("iHealth") && victim.GetPropInt("iLives") > 1)
+		{
+			victim.PlayVoiceClip(MLGSniperLostLive[GetRandomInt(0, sizeof(MLGSniperLostLive)-1)], VSH2_VOICE_ALL);
+			
+			//TF2_AddCondition(victim.index, TFCond_Ubercharged, 4.0);
+			TF2_AddCondition(victim.index, TFCond_DefenseBuffed, 4.0);
+			TF2_AddCondition(victim.index, TFCond_SpeedBuffAlly, 4.0);
+			
+			victim.SetPropInt("iLives", victim.GetPropInt("iLives") - 1);
+			victim.SetPropInt("iHealth", victim.GetPropInt("iMaxHealth"));
+		}
+	}
 }
 public void MLGSniper_OnPlayerAirblasted(const VSH2Player airblaster, const VSH2Player airblasted, Event event)
 {
