@@ -148,7 +148,7 @@ public void OnLibraryAdded(const char[] name) {
 		g_vsh2_cvars.scout_rage_gen = FindConVar("vsh2_scout_rage_gen");
 		g_vsh2_cvars.airblast_rage = FindConVar("vsh2_airblast_rage");
 		g_vsh2_cvars.jarate_rage = FindConVar("vsh2_jarate_rage");
-		g_iMLGSniperID = VSH2_RegisterPlugin("template_boss");
+		g_iMLGSniperID = VSH2_RegisterPlugin("mlg_sniper");
 		LoadVSH2Hooks();
 	}
 }
@@ -368,7 +368,7 @@ public void MLGSniper_OnPlayerKilled(const VSH2Player attacker, const VSH2Player
 	}
 	else attacker.SetPropFloat("flKillSpree", curtime+5.0);
 	
-	SpawnModelOnKill(victim, event, MtnDewModel);
+	SpawnModelOnKill(victim, event);
 }
 
 public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player victim, Event event)
@@ -419,14 +419,14 @@ public void MLGSniper_OnBossMedicCall(const VSH2Player player)
 	///37; 0.0	- Max ammo bonus (hidden)
 	///40; 1.0	- Normal move while scoped
 	///390; 5.0	- Headshot damage mult (*5.0) = from 750 to 2250
-	///392; 0.2	- Bodyshot damage mult (*5.0) = from 30 to 90
+	///392; 0.2	- Bodyshot damage mult (*0.2) = from 30 to 90
 	///305; 1.0	- Traced bullets
 	///376; 1.0	- Aiming no flitch
 	///377; 0.9	- Aiming knockback resistance
 	///637; 1.0	- Sniper independent zoom DISPLAY ONLY
 	///636; 1.0	- Sniper crit no scope
 	///144; 3.0	- Lunchbox adds minicrits (?)
-	int awp = player.SpawnWeapon("tf_weapon_sniperrifle_classic", 851, 100, 5, "37;0.0; 40;1.0; 390;5.0; 392;0.2; 305;1.0; 376;1.0; 377;0.9; 637;1.0; 636;1.0; 144;3.0");
+	int awp = player.SpawnWeapon("tf_weapon_sniperrifle_classic", 851, 100, 5, "37 ; 0.0 ; 40 ; 1.0 ; 390 ; 5.0; 392 ; 0.2 ; 305 ; 1.0 ; 376 ; 1.0 ; 377 ; 0.9 ; 637 ; 1.0 ; 636 ; 1.0; 144 ; 3.0");
 	SetEntPropEnt(player.index, Prop_Send, "m_hActiveWeapon", awp);
 		
 	int living = GetLivingPlayers(VSH2Team_Red);
@@ -593,22 +593,23 @@ public int HintPanel(Menu menu, MenuAction action, int param1, int param2)
 }
 
 ///From FF2 plugin ff2_1st_set_abilities
-stock void SpawnModelOnKill(const VSH2Player victim, Event event, const char[] model, float duration = 0.0)
+stock void SpawnModelOnKill(const VSH2Player victim, Event event)
 {
+	/*
 	if(model[0]!='\0')
 	{
 		
 		LogError("[MLG Sniper] SpawnModelOnKill: Empty model name!");
 		return;
-	}
-	if(!IsModelPrecached(model))
+	}*/
+	if(!IsModelPrecached(MtnDewModel))
 	{
-		if(!FileExists(model, true))
+		if(!FileExists(MtnDewModel, true))
 		{
-			LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' doesn't exist!", model);
+			LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' doesn't exist!", MtnDewModel);
 			return;
 		}
-		LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' isn't precached!", model);
+		LogError("[MLG Sniper] SpawnModelOnKill: Model '%s' isn't precached!", MtnDewModel);
 		return;
 	}
 	CreateTimer(0.01, Timer_RemoveRagdoll, GetEventInt(event, "userid"), TIMER_FLAG_NO_MAPCHANGE);
@@ -617,7 +618,7 @@ stock void SpawnModelOnKill(const VSH2Player victim, Event event, const char[] m
 	int prop=CreateEntityByName("prop_physics_override");
 	if(IsValidEntity(prop))
 	{
-		SetEntityModel(prop, model);
+		SetEntityModel(prop, MtnDewModel);
 		SetEntityMoveType(prop, MOVETYPE_VPHYSICS);
 		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 16);
@@ -627,10 +628,7 @@ stock void SpawnModelOnKill(const VSH2Player victim, Event event, const char[] m
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 		position[2]+=20;
 		TeleportEntity(prop, position, NULL_VECTOR, NULL_VECTOR);
-		if(duration>0.5)
-		{
-			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-		}
+		//CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
@@ -643,7 +641,7 @@ public Action Timer_RemoveRagdoll(Handle timer, any userid)
 		AcceptEntityInput(ragdoll, "Kill");
 	}
 }
-
+/*
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
 	int entity=EntRefToEntIndex(entid);
@@ -652,3 +650,4 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 		AcceptEntityInput(entity, "Kill");
 	}
 }
+*/

@@ -19,9 +19,9 @@
 
 /// voicelines
 char BionicCommandoIntro[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_intro.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_intro2.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_intro3.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_intro.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_intro2.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_intro3.mp3"
 };
 
 char BionicCommandoJump[][] = {
@@ -34,42 +34,40 @@ char BionicCommandoStab[][] = {
 };
 */
 char BionicCommandoDeath[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_fail.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_fail2.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_fail.mp3"
 };
 
 char BionicCommandoLast[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_lastman.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_lastman2.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_lastman.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_lastman2.mp3"
 };
 
 char BionicCommandoRage[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_rage.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_rage.mp3"
 };
 
 char BionicCommandoKill[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_scout.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_soldier.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_pyro.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_demo.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_heavy.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_heavy_special.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_engy.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_medic.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_sniper.mp3",
-	"freak_fortress_2/bionic_commando/bionic_commando_kill_spy.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_scout.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_soldier.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_pyro.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_demo.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_heavy.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_engy.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_medic.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_sniper.mp3",
+	"freak_fortress_2/bioniccommando/bionic_commando_kill_spy.mp3"
 };
 
 char BionicCommandoSpree[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_killingspree.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_killingspree.mp3"
 };
 
 char BionicCommandoWin[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_win.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_win.mp3"
 };
 
 char BionicCommandoThemes[][] = {
-	"freak_fortress_2/bionic_commando/bionic_commando_bgm.mp3"
+	"freak_fortress_2/bioniccommando/bionic_commando_theme.mp3"
 };
 
 float BionicCommandoThemesTime[] = {
@@ -120,7 +118,7 @@ public void OnLibraryAdded(const char[] name) {
 		g_vsh2_cvars.scout_rage_gen = FindConVar("vsh2_scout_rage_gen");
 		g_vsh2_cvars.airblast_rage = FindConVar("vsh2_airblast_rage");
 		g_vsh2_cvars.jarate_rage = FindConVar("vsh2_jarate_rage");
-		g_iBionicCommandoID = VSH2_RegisterPlugin("template_boss");
+		g_iBionicCommandoID = VSH2_RegisterPlugin("bionic_commando");
 		LoadVSH2Hooks();
 	}
 }
@@ -325,15 +323,15 @@ public void BionicCommando_OnPlayerKilled(const VSH2Player attacker, const VSH2P
 		case TFClass_DemoMan:
 			attacker.PlayVoiceClip(BionicCommandoKill[3], VSH2_VOICE_SPREE);
 		case TFClass_Heavy:
-			attacker.PlayVoiceClip(BionicCommandoKill[GetRandomInt(4, 5)], VSH2_VOICE_SPREE);
+			attacker.PlayVoiceClip(BionicCommandoKill[4], VSH2_VOICE_SPREE);
 		case TFClass_Engineer:
-			attacker.PlayVoiceClip(BionicCommandoKill[6], VSH2_VOICE_SPREE);
+			attacker.PlayVoiceClip(BionicCommandoKill[5], VSH2_VOICE_SPREE);
 		case TFClass_Medic:
-			attacker.PlayVoiceClip(BionicCommandoKill[7], VSH2_VOICE_SPREE);
+			attacker.PlayVoiceClip(BionicCommandoKill[6], VSH2_VOICE_SPREE);
 		case TFClass_Sniper:
-			attacker.PlayVoiceClip(BionicCommandoKill[8], VSH2_VOICE_SPREE);
+			attacker.PlayVoiceClip(BionicCommandoKill[7], VSH2_VOICE_SPREE);
 		case TFClass_Spy:
-			attacker.PlayVoiceClip(BionicCommandoKill[9], VSH2_VOICE_SPREE);
+			attacker.PlayVoiceClip(BionicCommandoKill[8], VSH2_VOICE_SPREE);
 	}
 	
 	if( attacker.GetPropInt("iKills") == 3 && VSH2GameMode_GetTotalRedPlayers() != 1 ) {
