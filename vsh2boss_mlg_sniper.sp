@@ -18,6 +18,8 @@
 #define MLGSniperModel    "models/freak_fortress_2/mlgsniper/mlgsniper.mdl"
 #define MtnDewModel		"models/freak_fortress_2/mlgsniper/mountain_dew.mdl"
 
+#define SpooksOverlay "models/player/mlgsniper/spookness"
+
 /// voicelines
 char MLGSniperIntro[][] = {
 	"freak_fortress_2/mlgsniper/mlgsniper_intro.mp3",
@@ -120,15 +122,15 @@ public Plugin myinfo = {
 	name = "VSH2 MLG Sniper",
 	author = "FF2: MrYtem39; VSH2: PavelKom",
 	description = "MLG Sniper boss plugin (ported from FF2)",
-	version = "0.8",
+	version = "1.0",
 	url = "bans.gamingfortress.ru"
 };
 
 /**
 TODO:
 	Add second live | DONE | Tested
-	Add screamer	(rage_overlay)
-	Add Mnt dew can ragdoll drop	(spawn model on kill) | DONE | Tested
+	Add screamer	| DONE | Tested
+	Add Mnt dew can ragdoll drop | DONE | Tested
 	Add slowmo (maybe not)
 **/
 
@@ -215,8 +217,16 @@ public void LoadVSH2Hooks()
 	if( !VSH2_HookEx(OnSoundHook, MLGSniper_OnSoundHook) )
 		LogError("Error loading OnSoundHook forwards for MLGSniper subplugin.");
 	
+	///Custom Health calculation for boss
 	if( !VSH2_HookEx(OnBossCalcHealth, MLGSniper_OnBossCalcHealth) )
 		LogError("Error loading OnBossCalcHealth forwards for MLGSniper subplugin.");
+	
+	///HUD for multilive logic
+	if( !VSH2_HookEx(OnMessageIntro, MLGSniper_OnMessageIntro) )
+		LogError("Error loading OnMessageIntro forwards for MLGSniper subplugin.");
+	if( !VSH2_HookEx(OnBossHealthCheck, MLGSniper_OnBossHealthCheck) )
+		LogError("Error loading OnBossHealthCheck forwards for MLGSniper subplugin.");
+	
 }
 
 
@@ -379,7 +389,7 @@ public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player v
 	{
 		victim.GiveRage(damage);
 		
-		///Multilive logic (NOT TESTED!!!)
+		///Multilive logic
 		
 		if (damage >= victim.GetPropInt("iHealth") && victim.GetPropInt("iLives") > 1)
 		{
@@ -388,6 +398,18 @@ public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player v
 			//TF2_AddCondition(victim.index, TFCond_Ubercharged, 4.0);
 			TF2_AddCondition(victim.index, TFCond_DefenseBuffed, 4.0);
 			TF2_AddCondition(victim.index, TFCond_SpeedBuffAlly, 4.0);
+			
+			for( int i=MaxClients; i; --i ) {
+				if( !IsValidClient(i) || !IsPlayerAlive(i) )
+					continue;
+				else if( GetClientTeam(i) != VSH2Team_Red)
+					continue;
+				
+				VSH2Player(i).SetOverlay(SpooksOverlay);
+				
+				CreateTimer(2.0, Timer_RemoveOverlay, i, TIMER_FLAG_NO_MAPCHANGE);
+				
+			}
 			
 			victim.SetPropInt("iLives", victim.GetPropInt("iLives") - 1);
 			victim.SetPropInt("iHealth", victim.GetPropInt("iMaxHealth"));
@@ -498,6 +520,45 @@ public Action MLGSniper_OnSoundHook(const VSH2Player player, char sample[PLATFOR
 	return Plugin_Continue;
 }
 
+///Multilive HUD
+public Action MLGSniper_OnMessageIntro(const VSH2Player player, char message[MAXMESSAGE])
+{
+	///It's not MLG Sniper
+	if (!IsMLGSniper(player))
+		return Plugin_Continue;
+	///2x♥
+	Format(message, MAXMESSAGE, "%s and %i Lives", message, player.GetPropInt("iLives"));
+	
+	return Plugin_Changed;
+}
+public Action MLGSniper_OnBossHealthCheck(const VSH2Player player, const bool isBoss, char message[MAXMESSAGE])
+{
+	///It's not MLG Sniper
+	if (!IsMLGSniper(player))
+		return Plugin_Continue;
+	
+	///On last live used default HUD msg
+	if (player.GetPropInt("iLives") <= 1)
+		return Plugin_Continue;
+	
+	char name[MAX_BOSS_NAME_SIZE];
+	player.GetName(name);
+	
+	if(isBoss) {
+		if (player.GetPropInt("iHealth") == player.GetPropInt("iMaxHealth"))
+			PrintCenterTextAll("%s showed his current HP: %i x %i", name , player.GetPropInt("iHealth"), player.GetPropInt("iLives"));
+		else
+			PrintCenterTextAll("%s showed his current HP: %i and (%i x %i)", name , player.GetPropInt("iHealth"), player.GetPropInt("iMaxHealth"), (player.GetPropInt("iLives")-1));
+		return Plugin_Handled;
+	}
+	
+	if (player.GetPropInt("iHealth") == player.GetPropInt("iMaxHealth"))
+		Format(message, MAXMESSAGE, "%s\n%s's current health is: %i x %i", message, name, player.GetPropInt("iHealth"), player.GetPropInt("iLives"));
+	else
+		Format(message, MAXMESSAGE, "%s\n%s's current health is: %i and (%i x %i)", message, name, player.GetPropInt("iHealth"), player.GetPropInt("iMaxHealth"), (player.GetPropInt("iLives")-1));
+	return Plugin_Handled;
+}
+
 /// Stocks =============================================
 stock bool IsValidClient(const int client, bool nobots=false)
 { 
@@ -595,13 +656,6 @@ public int HintPanel(Menu menu, MenuAction action, int param1, int param2)
 ///From FF2 plugin ff2_1st_set_abilities
 stock void SpawnModelOnKill(const VSH2Player victim, Event event)
 {
-	/*
-	if(model[0]!='\0')
-	{
-		
-		LogError("[MLG Sniper] SpawnModelOnKill: Empty model name!");
-		return;
-	}*/
 	if(!IsModelPrecached(MtnDewModel))
 	{
 		if(!FileExists(MtnDewModel, true))
@@ -641,6 +695,7 @@ public Action Timer_RemoveRagdoll(Handle timer, any userid)
 		AcceptEntityInput(ragdoll, "Kill");
 	}
 }
+
 /*
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
@@ -651,3 +706,15 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	}
 }
 */
+
+public Action Timer_RemoveOverlay(Handle timer, int client){
+	//int client=GetClientOfUserId(userid);
+	for( int i=MaxClients; i; --i ) {
+		if( !IsValidClient(i))
+			continue;
+		//else if( GetClientTeam(i) != VSH2Team_Red)
+		//	continue;
+				
+		VSH2Player(i).SetOverlay("");
+	}
+}
