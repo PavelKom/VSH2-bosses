@@ -120,15 +120,15 @@ public Plugin myinfo = {
 	name = "VSH2 MLG Sniper",
 	author = "FF2: MrYtem39; VSH2: PavelKom",
 	description = "MLG Sniper boss plugin (ported from FF2)",
-	version = "0.5",
+	version = "0.8",
 	url = "bans.gamingfortress.ru"
 };
 
 /**
 TODO:
-	Add second live | DONE | Not tested!!!
+	Add second live | DONE | Tested
 	Add screamer	(rage_overlay)
-	Add Mnt dew can ragdoll drop	(spawn model on kill) | DONE | Not tested!!!
+	Add Mnt dew can ragdoll drop	(spawn model on kill) | DONE | Tested
 	Add slowmo (maybe not)
 **/
 
