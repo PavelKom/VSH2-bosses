@@ -214,9 +214,6 @@ public void LoadVSH2Hooks()
 	if( !VSH2_HookEx(OnLastPlayer, MLGSniper_OnLastPlayer) )
 		LogError("Error loading OnLastPlayer forwards for MLGSniper subplugin.");
 	
-	if( !VSH2_HookEx(OnSoundHook, MLGSniper_OnSoundHook) )
-		LogError("Error loading OnSoundHook forwards for MLGSniper subplugin.");
-	
 	///Custom Health calculation for boss
 	if( !VSH2_HookEx(OnBossCalcHealth, MLGSniper_OnBossCalcHealth) )
 		LogError("Error loading OnBossCalcHealth forwards for MLGSniper subplugin.");
@@ -381,40 +378,58 @@ public void MLGSniper_OnPlayerKilled(const VSH2Player attacker, const VSH2Player
 	SpawnModelOnKill(victim, event);
 }
 
-public void MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player victim, Event event)
+public Action MLGSniper_OnPlayerHurt(const VSH2Player attacker, const VSH2Player victim, Event event)
 {
-	int damage = event.GetInt("damageamount");
+	if (!IsMLGSniper(victim))
+		return Plugin_Continue;
 	
-	if( IsMLGSniper(victim) && victim.GetPropInt("bIsBoss") )
+	int damage = event.GetInt("damageamount");
+	victim.GiveRage(damage);
+	
+	int custom = event.GetInt("custom");
+	if( custom == TF_CUSTOM_TELEFRAG && victim.GetPropInt("iLives") > 1)
 	{
-		victim.GiveRage(damage);
+		damage = (victim.GetPropInt("iHealth") + victim.GetPropInt("iMaxHealth") * (victim.GetPropInt("iLives")-1) + 1);
 		
-		///Multilive logic
+		if (damage < 9002)
+			damage = 9002;
 		
-		if (damage >= victim.GetPropInt("iHealth") && victim.GetPropInt("iLives") > 1)
-		{
-			victim.PlayVoiceClip(MLGSniperLostLive[GetRandomInt(0, sizeof(MLGSniperLostLive)-1)], VSH2_VOICE_ALL);
-			
-			//TF2_AddCondition(victim.index, TFCond_Ubercharged, 4.0);
-			TF2_AddCondition(victim.index, TFCond_DefenseBuffed, 4.0);
-			TF2_AddCondition(victim.index, TFCond_SpeedBuffAlly, 4.0);
-			
-			for( int i=MaxClients; i; --i ) {
-				if( !IsValidClient(i) || !IsPlayerAlive(i) )
-					continue;
-				else if( GetClientTeam(i) != VSH2Team_Red)
-					continue;
-				
-				VSH2Player(i).SetOverlay(SpooksOverlay);
-				
-				CreateTimer(2.0, Timer_RemoveOverlay, i, TIMER_FLAG_NO_MAPCHANGE);
-				
-			}
-			
-			victim.SetPropInt("iLives", victim.GetPropInt("iLives") - 1);
-			victim.SetPropInt("iHealth", victim.GetPropInt("iMaxHealth"));
-		}
+		victim.SetPropInt("iLives",0);
+		int attDamage = attacker.GetPropInt("iDamage") + damage;
+		attacker.SetPropInt("iDamage", attDamage);
+		
+		SetVariantInt(damage);
+		AcceptEntityInput(victim.index, "RemoveHealth");
+		return Plugin_Handled;
 	}
+	
+		
+	///Multilive logic
+	if (damage >= victim.GetPropInt("iHealth") && victim.GetPropInt("iLives") > 1)
+	{
+		victim.PlayVoiceClip(MLGSniperLostLive[GetRandomInt(0, sizeof(MLGSniperLostLive)-1)], VSH2_VOICE_ALL);
+		
+		//TF2_AddCondition(victim.index, TFCond_Ubercharged, 4.0);
+		TF2_AddCondition(victim.index, TFCond_DefenseBuffed, 4.0);
+		TF2_AddCondition(victim.index, TFCond_SpeedBuffAlly, 4.0);
+		
+		for( int i=MaxClients; i; --i ) {
+			if( !IsValidClient(i) || !IsPlayerAlive(i) )
+				continue;
+			else if( GetClientTeam(i) != VSH2Team_Red)
+				continue;
+			
+			VSH2Player(i).SetOverlay(SpooksOverlay);
+			
+			CreateTimer(2.0, Timer_RemoveOverlay, i, TIMER_FLAG_NO_MAPCHANGE);
+			
+		}
+		
+		victim.SetPropInt("iLives", victim.GetPropInt("iLives") - 1);
+		victim.SetPropInt("iHealth", victim.GetPropInt("iMaxHealth"));
+	}
+	
+	return Plugin_Continue;
 }
 public void MLGSniper_OnPlayerAirblasted(const VSH2Player airblaster, const VSH2Player airblasted, Event event)
 {
@@ -466,12 +481,23 @@ public void MLGSniper_OnBossJarated(const VSH2Player victim, const VSH2Player th
 }
 
 
-public void MLGSniper_OnRoundEndInfo(const VSH2Player player, bool bossBool, char message[MAXMESSAGE])
+public Action MLGSniper_OnRoundEndInfo(const VSH2Player player, bool bossBool, char message[MAXMESSAGE])
 {
 	if( !IsMLGSniper(player) )
-		return;
+		return Plugin_Continue;
 	else if( bossBool )
 		player.PlayVoiceClip(MLGSniperWin[GetRandomInt(0, sizeof(MLGSniperWin)-1)], VSH2_VOICE_WIN);
+	
+	if (player.GetPropInt("iLives")<= 1)
+		return Plugin_Continue;
+	char name[MAX_BOSS_NAME_SIZE];
+	player.GetName(name);
+	if (player.GetPropInt("iHealth") == player.GetPropInt("iMaxHealth"))
+		Format(message, MAXMESSAGE, "%s\n%s (%N) had %i x %i health left.", message, name, player.index, player.GetPropInt("iHealth"), player.GetPropInt("iLives"));
+	else
+		Format(message, MAXMESSAGE, "%s\n%s (%N) had %i (and %i x %i) health left.", message, name, player.index, player.GetPropInt("iHealth"), player.GetPropInt("iMaxHealth"), (player.GetPropInt("iLives")-1));
+	
+	return Plugin_Handled;
 }
 
 
@@ -508,18 +534,6 @@ public void MLGSniper_OnLastPlayer(const VSH2Player player)
 		return;
 	player.PlayVoiceClip(MLGSniperLast[GetRandomInt(0, sizeof(MLGSniperLast)-1)], VSH2_VOICE_LASTGUY);
 }
-
-public Action MLGSniper_OnSoundHook(const VSH2Player player, char sample[PLATFORM_MAX_PATH], int& channel, float& volume, int& level, int& pitch, int& flags)
-{
-	if( !IsMLGSniper(player) )
-		return Plugin_Continue;
-	//else if( IsVoiceLine(sample) )    
-	/// this code: returning Plugin_Handled blocks the sound, a voiceline in this case.
-	//	return Plugin_Handled;
-	
-	return Plugin_Continue;
-}
-
 ///Multilive HUD
 public Action MLGSniper_OnMessageIntro(const VSH2Player player, char message[MAXMESSAGE])
 {
