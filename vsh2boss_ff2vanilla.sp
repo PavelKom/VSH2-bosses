@@ -37,7 +37,7 @@ Seeldier
 	+ Jump
 	+ Weightdown
 	+ Rage stun
-	+- Rage spawn clones
+	+ Rage spawn clones
 	- DUO boss
 	
 Seeman
@@ -527,6 +527,7 @@ public void FF2Vanilla_OnBossThink(const VSH2Player player)
 	
 	if(player.GetPropInt("iBossType") == g_iDemopanID)
 	{
+		SetEntPropFloat(player.index, Prop_Send, "m_flMaxspeed", 270.0);
 		if( VSH2_SuperJumpThink(player, 2.5, 25.0) ) 
 			player.SuperJump(player.GetPropFloat("flCharge"), -100.0);
 		if( OnlyScoutsLeft(VSH2Team_Red) )
@@ -552,6 +553,7 @@ public void FF2Vanilla_OnBossThink(const VSH2Player player)
 	}
 	else if(player.GetPropInt("iBossType") == g_iGentleSpyID)
 	{
+		SetEntPropFloat(player.index, Prop_Send, "m_flMaxspeed", 350.0);
 		if( OnlyScoutsLeft(VSH2Team_Red) )
 			player.SetPropFloat("flRAGE", player.GetPropFloat("flRAGE") + g_vsh2_cvars.scout_rage_gen.FloatValue);
 		
@@ -568,6 +570,7 @@ public void FF2Vanilla_OnBossThink(const VSH2Player player)
 			player.GetPropInt("iBossType") == g_iSeeldierID || 
 			player.GetPropInt("iBossType") == g_iSeemanID)
 	{
+		SetEntPropFloat(player.index, Prop_Send, "m_flMaxspeed", 340.0);
 		if( VSH2_SuperJumpThink(player, 2.5, 25.0) ) 
 			player.SuperJump(player.GetPropFloat("flCharge"), -100.0);
 		if( OnlyScoutsLeft(VSH2Team_Red) )
@@ -690,7 +693,7 @@ public Action FF2Vanilla_OnBossCalcHealth(const VSH2Player player, int& max_heal
 	
 	if(player.GetPropInt("iBossType") == g_iNinjaSpyID)
 	{
-		player.SetPropInt("iLives", 2);
+		player.SetPropInt("iLives", 3);
 	
 		max_health = RoundFloat( Pow((((240.0)+red_players)*(red_players)), 1.0341)+1023 ) / (boss_count);
 	
@@ -871,13 +874,15 @@ public void FF2Vanilla_OnBossMedicCall(const VSH2Player player)
 		}
 		
 		TF2_RemoveWeaponSlot(player.index, TFWeaponSlot_Primary);
-		///2: 9 +800% damage
-		///51: 1 Crits on headshot
-		///309: 1 Crit kills will gib
-		///391: 99 Reduces mystery solving time by up to 99%
-		int gentleGun = player.SpawnWeapon("tf_weapon_revolver", 61, 100, 5, "2 ; 9 ; 51 ; 1 ; 309 ; 1 ; 391 ; 99");
+		///25; 0.0	- Max ammo bonus (hidden)
+		///2; 9 +800% damage
+		///51; 1 Crits on headshot
+		///309; 1 Crit kills will gib
+		///391; 99 Reduces mystery solving time by up to 99%
+		///3; 0.1	- Clip size mult
+		int gentleGun = player.SpawnWeapon("tf_weapon_revolver", 61, 100, 5, "25 ; 0.0; 2 ; 9 ; 51 ; 1 ; 309 ; 1 ; 391 ; 99 ; 3 ; 0.1");
 		SetEntPropEnt(player.index, Prop_Send, "m_hActiveWeapon", gentleGun);
-		SetWeaponClip(gentleGun, 3);
+		SetWeaponAmmo(gentleGun, 2);
 	}
 	else if (player.GetPropInt("iBossType") == g_iNinjaSpyID)
 		player.DoGenericStun(700.0);
@@ -897,7 +902,7 @@ public void FF2Vanilla_OnBossMedicCall(const VSH2Player player)
 			
 			clone = VSH2Player(i);
 			clone.hOwnerBoss = player;
-			clone.ConvertToMinion(0.1);
+			clone.ConvertToMinion(0.2);
 		}
 	}
 	else if (player.GetPropInt("iBossType") == g_iSeemanID)
@@ -1074,7 +1079,7 @@ public void FF2Vanilla_OnMinionInitialized(const VSH2Player player, const VSH2Pl
 {
 	if( !IsBossFromPack(master) )
 		return;
-	if (player.GetPropInt("iBossType") == g_iSeeldierID)
+	if (master.GetPropInt("iBossType") == g_iSeeldierID)
 		RecruitClone(player, master);
 }
 
@@ -1087,10 +1092,9 @@ void RecruitClone(const VSH2Player base, const VSH2Player master)
 	if( VSH2GameMode_GetPropInt("bTF2Attribs") )
 		TF2Attrib_RemoveAll(client);
 #endif
-	///68: -1x cap rate
 	int weapon = base.SpawnWeapon("tf_weapon_bottle", 191, 100, 5, "68 ; -1");
 	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
-	TF2_AddCondition(client, TFCond_Ubercharged, 3.0);
+	//TF2_AddCondition(client, TFCond_Ubercharged, 3.0);
 	SetEntityHealth(client, 175);
 	SetVariantString(SeeldierModel);
 	AcceptEntityInput(client, "SetCustomModel");
@@ -1099,13 +1103,13 @@ void RecruitClone(const VSH2Player base, const VSH2Player master)
 	//SetEntityRenderMode(client, RENDER_TRANSCOLOR);
 	//SetEntityRenderColor(client, 30, 160, 255, 255);
 	
-	float masterPosition[3], cloneVelocity[3];
+	float masterPosition[3];
+	float cloneVelocity[3];
 	GetEntPropVector(master.index, Prop_Send, "m_vecOrigin", masterPosition);
 	
-	cloneVelocity[0]=GetRandomFloat(300.0, 500.0)*(GetRandomInt(0, 1) ? 1:-1);
-	cloneVelocity[1]=GetRandomFloat(300.0, 500.0)*(GetRandomInt(0, 1) ? 1:-1);
+	cloneVelocity[0]=GetRandomFloat(300.0, 500.0)*(GetRandomInt(0, 1) ? 1.0:-1.0);
+	cloneVelocity[1]=GetRandomFloat(300.0, 500.0)*(GetRandomInt(0, 1) ? 1.0:-1.0);
 	cloneVelocity[2]=GetRandomFloat(300.0, 500.0);
-	
 	TeleportEntity(base.index, masterPosition, NULL_VECTOR, cloneVelocity);
 }
 
@@ -1261,10 +1265,22 @@ public void StunHHH(const int userid, const int targetid)
 	TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAGS_GHOSTSCARE|TF_STUNFLAG_NOSOUNDOREFFECT, target);
 }
 
+stock int SetWeaponAmmo(const int weapon, const int ammo)
+{
+	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+	if (owner <= 0)
+		return 0;
+	if (IsValidEntity(weapon)) {
+		int iOffset = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
+		int iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
+		SetEntData(owner, iAmmoTable+iOffset, ammo, 4, true);
+	}
+	return 0;
+}
+
 ///From FF2 1st set abilities (rewrited)
 public void RageExplosiveDance(const int userid, int count)
 {
-	PrintToChatAll("[Seeman] Explosice dance count: %i", count);
 	int client = GetClientOfUserId(userid);
 	if(count<=35 && IsPlayerAlive(client))
 	{
@@ -1314,7 +1330,6 @@ public void RageExplosiveDance(const int userid, int count)
 
 public void TradeSpam(int client, int count)
 {
-	PrintToChatAll("[Demopan] Tradespam #%i",count);
 	if (count >= 13)///Rage has finished-reset it in 6 seconds (trade_0 is 100% transparent apparently)
 		SetPawnTimer(TradeSpam, 6.0, client, 0);
 	else
