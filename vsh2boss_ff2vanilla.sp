@@ -38,14 +38,14 @@ Seeldier
 	+ Weightdown
 	+ Rage stun
 	+ Rage spawn clones
-	- DUO boss
+	+- DUO boss
 	
 Seeman
 	+ Jump
 	+ Weightdown
 	+ Rage stun
 	+ Rage explosive dance
-	- DUO boss
+	+- DUO boss
 
 **/
 
@@ -514,6 +514,25 @@ public void FF2Vanilla_OnBossSelected(const VSH2Player player)
 	panel.DrawItem("Exit");
 	panel.Send(player.index, HintPanel, 50);
 	delete panel;
+	
+	///DUO-boss logic
+	if (player.GetPropInt("iBossType") == g_iSeeldierID || player.GetPropInt("iBossType") == g_iSeemanID)
+	{
+		VSH2Player secondBoss = VSH2GameMode_FindNextBoss();
+		if(secondBoss == player)
+		{
+			LogError("[FF2Vanilla] Infinite OnBossSelected calling for DUO-bosses");
+			return;
+		}
+		
+		if(VSH2GameMode_GetTotalRedPlayers() > 6 and VSH2GameMode_CountBosses(true) < 2)
+		{
+			if (player.GetPropInt("iBossType") == g_iSeeldierID)
+				secondBoss.MakeBossAndSwitch( g_iSeemanID, false);
+			else if (player.GetPropInt("iBossType") == g_iSeemanID)
+				secondBoss.MakeBossAndSwitch( g_iSeeldierID, false);
+		}
+	}
 }
 
 public void FF2Vanilla_OnBossThink(const VSH2Player player)
