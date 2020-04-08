@@ -10,6 +10,12 @@
 #tryinclude <tf2attributes>
 #define REQUIRE_PLUGIN
 
+///Bosspack constructed on vsh2boss_template.sp
+///VSH2 2.6.15
+
+///Materials (only .bz2): https://yadi.sk/d/ASEDxuUPh9-tVw
+
+
 /**
 Default bosses from FF2:
 
@@ -525,7 +531,7 @@ public void FF2Vanilla_OnBossSelected(const VSH2Player player)
 			return;
 		}
 		
-		if(VSH2GameMode_GetTotalRedPlayers() > 6 and VSH2GameMode_CountBosses(true) < 2)
+		if(VSH2GameMode_GetTotalRedPlayers() > 6 && VSH2GameMode_CountBosses(true) < 2)
 		{
 			if (player.GetPropInt("iBossType") == g_iSeeldierID)
 				secondBoss.MakeBossAndSwitch( g_iSeemanID, false);
