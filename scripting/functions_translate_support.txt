@@ -1,0 +1,286 @@
+///Rewrited function from VSH2 adding support for other languages
+
+///vsh2.sp
+
+///Add translations file
+public void OnPluginStart()
+{
+/// ...
+	LoadTranslations("vsh2.phrases");
+/// ...
+}
+
+///
+public Action CheckLateSpawn(int client, const char[] command, int argc)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Late Spawn Blocked");
+	CPrintToChat(client, "%t", "Late spawn blocked");
+/// ...
+}
+
+///
+public Action BlockSuicide(int client, const char[] command, int argc)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} You cannot suicide yet as a boss. Please Use '!resetq' instead.");
+	CPrintToChat(client, "%t", "Block suicide");
+/// ...
+}
+
+///
+public void ConnectionMessage(const int userid)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Welcome to VSH2, type /bosshelp for help!");
+	CPrintToChat(client, "%t", "Connection message");
+/// ...
+}
+
+///
+public void ShowPlayerScores()
+{
+/// ...
+	//ShowHudText(i, -1, "Most damage dealt by:\n1)%i - %s\n2)%i - %s\n3)%i - %s\n\nDamage Dealt: %i", hTop[0].iDamage, score1, hTop[1].iDamage, score2, hTop[2].iDamage, score3, player.iDamage);
+	ShowHudText(i, -1, "%t", "Most damage dealt", hTop[0].iDamage, score1, hTop[1].iDamage, score2, hTop[2].iDamage, score3, player.iDamage);
+	
+	//OR
+	char dmgMsg[MAXMESSAGE];
+	Format(dmgMsg, MAXMESSAGE, "%t", "Most damage dealt", hTop[0].iDamage, score1, hTop[1].iDamage, score2, hTop[2].iDamage, score3, player.iDamage);
+/// ...
+}
+
+///
+public void CalcScores()
+{
+/// ...
+	//CPrintToChat(i, "{olive}[VSH 2] Queue{default} You gained %i queue points.", queue);
+	//CPrintToChat(i, "{olive}[VSH 2] Queue{default} You scored %i points.", points);
+	
+	CPrintToChat(i, "%t", "Queue gained", queue);
+	CPrintToChat(i, "%t", "Queue scored", points);
+/// ...
+}
+
+///modules/stocks.inc
+
+///
+stock void SkipBossPanelNotify(const int client/*, bool newchoice = true*/)
+{
+/// ...
+	//panel.SetTitle("[VSH2] You're The Next Boss!");
+	panel.SetTitle("%t", "Panel title next boss");
+	//Format(strNotify, sizeof(strNotify), "You are going to be a Boss soon! Type /halenext to check/reset your queue points.\nAlternatively, use !resetq.\nDon't forget to use !setboss to set your boss.");
+	Format(strNotify, sizeof(strNotify), "%t", "Panel item next boss");
+/// ...
+}
+
+///modules.handler.sp
+
+///
+public void ManageDisconnect(const int client)
+{
+/// ...
+	//CPrintToChat(replace.index, "{olive}[VSH 2]{green} Surprise! You're on NOW!");
+	CPrintToChat(replace.index, "%t", "Surprise you're boss");
+/// ...
+	//CPrintToChatAll("{olive}[VSH 2]{red} A Boss Just Disconnected!");
+	CPrintToChatAll("%t", "Boss disconnected");
+/// ...
+}
+
+///
+public Action ManageOnBossTakeDamage(const BaseBoss victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+/// ...
+	//PrintCenterText(attacker, "You Tickled %s!", boss_name);
+	//PrintCenterText(victim.index, "You Were Just Tickled!");
+	PrintCenterText(attacker, "%t", "OnStabbed attacker", boss_name);
+	PrintCenterText(victim.index, "%t", "OnStabbed victim");
+/// ...
+	PrintCenterText(attacker, "You Market Gardened %s!", name);
+	PrintCenterText(victim.index, "You Were Just Market Gardened!");
+/// ...
+}
+
+///If Goomba stomp included
+public Action ManageOnGoombaStomp(int attacker, int client, float& damageMultiplier, float& damageAdd, float& JumpPower)
+{
+/// ...
+	//CPrintToChatAllEx(attacker, "{olive}>> {teamcolor}%N {default}just goomba stomped {unique}%N{default}!", attacker, client);
+	CPrintToChatAllEx(attacker, "{olive}>> {teamcolor}%N {default}just goomba stomped {unique}%N{default}!", attacker, client);
+/// ...
+}
+
+///All default bosses have 1 life
+public void ManageMessageIntro(ArrayList bosses)
+{
+/// ...
+	//char intro_msg[MAXMESSAGE];
+	//SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
+/// ...
+	//Format(intro_msg, MAXMESSAGE, "%s\n%N has become %s with %i Health", intro_msg, base.index, name, base.iHealth);
+	
+	//for( i=MaxClients; i; --i ) {
+		//if( IsClientInGame(i) )
+			//ShowHudText(i, -1, "%s", intro_msg);
+	//}
+	MessageConstructor(bosses, "intro");
+	
+	gamemode.iRoundState = StateRunning;
+	delete bosses;
+/// ...
+}
+
+///Additional stock
+stock void MessageConstructor(ArrayList bosses, char[] eventType)
+{
+	char msg[MAXMESSAGE];
+	int i;
+	BaseBoss base;
+	int len = bosses.Length;
+	for( i=MaxClients; i; --i ) { ///HUD message constructor
+		if( !IsClientInGame(i) )
+			continue;
+		msg[0] = '\0';
+		for( i=0; i<len; ++i ) {
+			base = bosses.Get(i);
+			if( base == view_as< BaseBoss >(0) ) ///???
+				continue;						 ///???
+			
+			char name[MAX_BOSS_NAME_SIZE];
+			base.GetName(name);
+			
+			if(StrEqual(eventType, "intro"))
+			{
+				///For 1-life logic ONLY
+				Format(msg, MAXMESSAGE, "%t", "OnMessageIntro 1 life", msg, base.index, name, base.iHealth);
+				
+				///Support multilive logic
+				if(base.iLives > 1)
+					Format(msg, MAXMESSAGE, "%t", "OnMessageIntro multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+				else
+					Format(msg, MAXMESSAGE, "%t", "OnMessageIntro 1 life", msg, base.index, name, base.iHealth);
+			}
+			else if(StrEqual(eventType, "end"))
+			{
+				///For 1-life logic ONLY
+				Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo 1 life", msg, base.index, name, base.iHealth);
+				
+				///Support multilive logic
+				if(base.iLives > 1)
+					Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+				else
+					Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo 1 life", msg, base.index, name, base.iHealth);
+			}
+			else if(StrEqual(eventType, "check"))
+			{
+				///For 1-life logic ONLY
+				Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self 1 life", msg, base.index, name, base.iHealth);
+				
+				///Support multilive logic
+				if(base.iLives > 1)
+					Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+				else
+					Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self multilive", msg, base.index, name, base.iHealth);
+			}
+		}
+		if(StrEqual(eventType, "intro"))
+		{
+			SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
+			ShowHudText(i, -1, "%s", msg);
+		}
+		
+		if(StrEqual(eventType, "end"))
+		{
+			CPrintToChat(i, "%t", "End of Round", msg);
+			SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
+			ShowHudText(i, -1, "%s", msg);
+		}
+		else if(StrEqual(eventType, "check"))
+		{
+			PrintCenterText(i, msg);
+			CPrintToChat(i, "%t","Boss Health Check", health_check);
+		}
+	}
+}
+
+///
+public void ManageRoundEndBossInfo(ArrayList bosses, bool bossWon)
+{
+/// ...
+	//char round_end_msg[MAXMESSAGE];
+	//Format(round_end_msg, MAXMESSAGE, "%s\n%s (%N) had %i (of %i) health left.", round_end_msg, name, base.index, base.iHealth, base.iMaxHealth);
+	
+	///round_end_msg[0] != '\0' Only if we have alive bosses (or custom bosses rewrite round_end_msg)
+	///For custom bosses:
+	///USE void YourBoss_OnRoundEndInfo instead of Action YourBoss_OnRoundEndInfo
+	
+	/*
+	if( round_end_msg[0] != '\0' ) {
+		CPrintToChatAll("{olive}[VSH 2] End of Round{default} %s", round_end_msg);
+		SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
+		for( i=MaxClients; i; --i ) {
+			if( IsValidClient(i) && !(GetClientButtons(i) & IN_SCORE) )
+				ShowHudText(i, -1, "%s", round_end_msg);
+		}
+	}
+	*/
+	if(len) ///We have alive bosses
+		MessageConstructor(bosses, "end");
+	
+	delete bosses;
+/// ...
+}
+
+///
+public void ManageBossCheckHealth(const BaseBoss base)
+{
+/// ...
+	/// If a boss reveals their own health, only show that one boss' health.
+	
+	//PrintCenterTextAll("%s showed his current HP: %i of %i", name, base.iHealth, base.iMaxHealth);
+	///For 1-life logic ONLY
+	PrintCenterTextAll("%t", "OnBossHealthCheck self 1 life", name, base.iHealth, base.iMaxHealth);
+	///Support multilive logic
+	if(base.iLives > 1)
+		PrintCenterTextAll("%t", "OnBossHealthCheck self multilive", name, base.iHealth, base.iMaxHealth, base.iLives);
+	else
+		PrintCenterTextAll("%t", "OnBossHealthCheck self 1 life", name, base.iHealth, base.iMaxHealth);
+/// ...
+	
+	/// If a non-boss is checking health, reveal all Boss' hp
+	else if( currtime >= gamemode.flHealthTime ) {
+/// ...
+		ArrayList bosses = new ArrayList();
+		//char health_check[MAXMESSAGE];
+		///Counting alive bosses
+		for( int i=MaxClients; i; --i ) {
+/// ...
+			///With multilive logic this hook is useless
+			//Action act = Call_OnBossHealthCheck(boss, false, health_check);
+			//if( act > Plugin_Changed )
+			//	continue;
+		
+			bosses.Push(boss);
+			
+			//char name[MAX_BOSS_NAME_SIZE];
+			//boss.GetName(name);
+			//Format(health_check, MAXMESSAGE, "%s\n%s's current health is: %i of %i", health_check, name, boss.iHealth, boss.iMaxHealth);
+			totalHealth += boss.iHealth;
+		}
+		//PrintCenterTextAll(health_check);
+		//CPrintToChatAll("{olive}[VSH 2] {axis}Boss Health Check{default} %s", health_check);
+		MessageConstructor(bosses, "check");
+/// ...
+	} else {
+		CPrintToChat(base.index, "%t", "Boss Health Check Timer", RoundFloat(gamemode.flHealthTime-currtime), LastBossTotalHealth);
+	}
+
+}
+
+
+
+
+
+
