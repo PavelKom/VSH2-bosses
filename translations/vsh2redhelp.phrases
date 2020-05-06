@@ -1,0 +1,8 @@
+"Phrases"
+{
+	"Help.Scout"
+	{
+		"en"	"Scout:\nCrit-a-Cola: grants criticals instead of minicrits.\nFan O' War: removes 5%% rage on hit.\nPistols get minicrits.\nCandycane: drops health pack on hit.\nMedics healing you get a speed-buff.\nSun-on-a-Stick: ignites Boss on fire.\nBackscatter: crits whenever it minicrits."
+		"ru"	"Разведчик:\nКритокола: гарантирует криты заместо мини-критов.\nВеер Войны: убирает 5%% ярости при ударе.\nПистолеты наносят миникриты.\nCandycane: drops health pack on hit.\nMedics healing you get a speed-buff.\nSun-on-a-Stick: ignites Boss on fire.\nBackscatter: crits whenever it minicrits."
+	}
+}

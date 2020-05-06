@@ -7,6 +7,7 @@ public void OnPluginStart()
 {
 /// ...
 	LoadTranslations("vsh2.phrases");
+	LoadTranslations("vsh2bosses.phrases");
 /// ...
 }
 
@@ -46,7 +47,8 @@ public void ShowPlayerScores()
 	
 	//OR
 	char dmgMsg[MAXMESSAGE];
-	Format(dmgMsg, MAXMESSAGE, "%t", "Most damage dealt", hTop[0].iDamage, score1, hTop[1].iDamage, score2, hTop[2].iDamage, score3, player.iDamage);
+	Format(dmgMsg, MAXMESSAGE, "%T", "Most damage dealt", i, hTop[0].iDamage, score1, hTop[1].iDamage, score2, hTop[2].iDamage, score3, player.iDamage);
+	ShowHudText(i, -1, dmgMsg);
 /// ...
 }
 
@@ -69,9 +71,10 @@ stock void SkipBossPanelNotify(const int client/*, bool newchoice = true*/)
 {
 /// ...
 	//panel.SetTitle("[VSH2] You're The Next Boss!");
-	panel.SetTitle("%t", "Panel title next boss");
+	Format(strNotify, sizeof(strNotify), "%T", "Panel title next boss", client);
+	panel.SetTitle(strNotify);
 	//Format(strNotify, sizeof(strNotify), "You are going to be a Boss soon! Type /halenext to check/reset your queue points.\nAlternatively, use !resetq.\nDon't forget to use !setboss to set your boss.");
-	Format(strNotify, sizeof(strNotify), "%t", "Panel item next boss");
+	Format(strNotify, sizeof(strNotify), "%T", "Panel item next boss", client);
 /// ...
 }
 
@@ -108,7 +111,7 @@ public Action ManageOnGoombaStomp(int attacker, int client, float& damageMultipl
 {
 /// ...
 	//CPrintToChatAllEx(attacker, "{olive}>> {teamcolor}%N {default}just goomba stomped {unique}%N{default}!", attacker, client);
-	CPrintToChatAllEx(attacker, "{olive}>> {teamcolor}%N {default}just goomba stomped {unique}%N{default}!", attacker, client);
+	CPrintToChatAllEx(attacker, "%t", "Goomba Stomp", attacker, client);
 /// ...
 }
 
@@ -154,35 +157,35 @@ stock void MessageConstructor(ArrayList bosses, char[] eventType)
 			if(StrEqual(eventType, "intro"))
 			{
 				///For 1-life logic ONLY
-				Format(msg, MAXMESSAGE, "%t", "OnMessageIntro 1 life", msg, base.index, name, base.iHealth);
+				Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnMessageIntro 1 life", i, base.index, name, base.iHealth);
 				
 				///Support multilive logic
 				if(base.iLives > 1)
-					Format(msg, MAXMESSAGE, "%t", "OnMessageIntro multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnMessageIntro multilive", i, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
 				else
-					Format(msg, MAXMESSAGE, "%t", "OnMessageIntro 1 life", msg, base.index, name, base.iHealth);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnMessageIntro 1 life", i, base.index, name, base.iHealth);
 			}
 			else if(StrEqual(eventType, "end"))
 			{
 				///For 1-life logic ONLY
-				Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo 1 life", msg, base.index, name, base.iHealth);
+				Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnRoundEndInfo 1 life", i, base.index, name, base.iHealth);
 				
 				///Support multilive logic
 				if(base.iLives > 1)
-					Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnRoundEndInfo multilive", i, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
 				else
-					Format(msg, MAXMESSAGE, "%t", "OnRoundEndInfo 1 life", msg, base.index, name, base.iHealth);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnRoundEndInfo 1 life", i, base.index, name, base.iHealth);
 			}
 			else if(StrEqual(eventType, "check"))
 			{
 				///For 1-life logic ONLY
-				Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self 1 life", msg, base.index, name, base.iHealth);
+				Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnBossHealthCheck not self 1 life", i, base.index, name, base.iHealth);
 				
 				///Support multilive logic
 				if(base.iLives > 1)
-					Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self multilive", msg, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnBossHealthCheck not self multilive", i, base.index, name, base.iHealth, base.iMaxHealth, base.iLives);
 				else
-					Format(msg, MAXMESSAGE, "%t", "OnBossHealthCheck not self multilive", msg, base.index, name, base.iHealth);
+					Format(msg, MAXMESSAGE, "%s\n%T", msg, "OnBossHealthCheck not self 1 life", i, base.index, name, base.iHealth);
 			}
 		}
 		if(StrEqual(eventType, "intro"))
@@ -193,14 +196,14 @@ stock void MessageConstructor(ArrayList bosses, char[] eventType)
 		
 		if(StrEqual(eventType, "end"))
 		{
-			CPrintToChat(i, "%t", "End of Round", msg);
+			CPrintToChat(i, "%t %s", "End of Round", msg);
 			SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
 			ShowHudText(i, -1, "%s", msg);
 		}
 		else if(StrEqual(eventType, "check"))
 		{
 			PrintCenterText(i, msg);
-			CPrintToChat(i, "%t","Boss Health Check", health_check);
+			CPrintToChat(i, "%t","Boss Health Check", msg);
 		}
 	}
 }
@@ -274,10 +277,280 @@ public void ManageBossCheckHealth(const BaseBoss base)
 		MessageConstructor(bosses, "check");
 /// ...
 	} else {
+		//CPrintToChat(base.index, "{olive}[VSH 2]{default} You cannot see the Boss HP now (wait %i seconds). Last known total boss health was %i.", RoundFloat(gamemode.flHealthTime-currtime), LastBossTotalHealth);
 		CPrintToChat(base.index, "%t", "Boss Health Check Timer", RoundFloat(gamemode.flHealthTime-currtime), LastBossTotalHealth);
 	}
-
 }
+
+///
+public void CheckAlivePlayers(const any nil)
+{
+/// ...
+	//PrintHintTextToAll("%i players are left; control point enabled!", living);
+	PrintHintTextToAll("%t", "Players are left", living);
+/// ...
+}
+
+///
+public void _SkipBossPanel()
+{
+/// ...
+	//CPrintToChat(upnext[j].index, "{olive}[VSH 2]{default} You are going to be a Boss soon! Type {olive}/halenext{default} to check/reset your queue points & !setboss to set your boss.");
+	CPrintToChat(upnext[j].index, "%t", "Boss soon");
+/// ...
+}
+
+///
+public void ManageFighterThink(const BaseBoss fighter)
+{
+/// ...
+	//Format(HUDText, 300, "Damage: %d - %N's Damage: %d", fighter.iDamage, obstarget, BaseBoss(obstarget).iDamage);
+	Format(HUDText, 300, "%T", "HUD damage and damage", i, fighter.iDamage, obstarget, BaseBoss(obstarget).iDamage);
+	
+	//Format(HUDText, 300, "Damage: %d", fighter.iDamage);
+	Format(HUDText, 300, "%T", "HUD damage", i, fighter.iDamage);
+/// ...
+		//Format(HUDText, 300, "Damage: %d | Lives: %d", fighter.iDamage, fighter.iLives);
+	//else Format(HUDText, 300, "Damage: %d", fighter.iDamage);
+		Format(HUDText, 300, "%T", "HUD damage and lives", i, fighter.iDamage, fighter.iLives);
+	else Format(HUDText, 300, "%T", "HUD damage", i, fighter.iDamage);
+/// ...
+	//case 1: {
+	//	Format(s, sizeof(s), "Status: Feign-Death Ready");
+	//}
+	//case 2: {
+	//	Format(s, sizeof(s), "Status: Dead-Ringered");
+	//}
+	//default: {
+	//	Format(s, sizeof(s), "Status: Inactive");
+	//}
+	case 1: {
+		Format(s, sizeof(s), "%T", "Status: Feign-Death Ready", i);
+	}
+	case 2: {
+		Format(s, sizeof(s), "%T", "Status: Dead-Ringered", i);
+	}
+	default: {
+		Format(s, sizeof(s), "%T", "Status: Inactive", i);
+	}
+/// ...
+	//Format(HUDText, 300, "%s | Kunai: %s", HUDText, GetWeaponAmmo(spy_secondary) ? "Ready" : "None");
+	Format(HUDText, 300, "%s | %T", HUDText, GetWeaponAmmo(spy_secondary) ? "HUD kunai ready" : "HUD kunai none", i);
+/// ...
+	//Format(HUDText, 300, "%s\nUbercharge: %i%%", HUDText, charge);
+	Format(HUDText, 300, "%s\n%T", HUDText, "HUD Ubercharge", i, charge);
+/// ...
+	//Format(HUDText, 300, "%s\nAir Strike Damage: %i", HUDText, fighter.iAirDamage);
+	Format(HUDText, 300, "%s\n%T", HUDText, "HUD Air Strike Damage", i, fighter.iAirDamage);
+/// ...
+	//Format(HUDText, 300, "%s\nShield: Active", HUDText);
+	Format(HUDText, 300, "%s\n%T", "HUD Shield Active", i, HUDText);
+/// ...
+	//else Format(HUDText, 300, "%s\nShield: Gone", HUDText);
+	else Format(HUDText, 300, "%s\n%T", "HUD Shield Gone", i, HUDText);
+/// ...
+}
+
+///modules/commands.sp
+
+///
+public Action ResetQueue(int client, int args)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Your Queue has been set to 0!");
+	CPrintToChat(client, "%t", "Queue set 0");
+/// ...
+}
+
+///
+public void QueuePanel(const int client)
+{
+/// ...
+	//Format(strBossList, MAXMESSAGE, "VSH2 Boss Queue:");
+	Format(strBossList, MAXMESSAGE, "%T", "VSH2 Boss Queue", client);
+/// ...
+	//else panel.DrawItem("None");
+	Format(strBossList, MAXMESSAGE, "%T", "None", client);
+	else panel.DrawItem(strBossList);
+/// ...
+	//Format(strBossList, 64, "Your queue points: %i (select to set to 0)", BaseBoss(client).iQueue );
+	Format(strBossList, 64, "%T," "Get Queue Points", client, BaseBoss(client).iQueue );
+/// ...
+}
+
+///
+public void TurnToZeroPanel(const int client)
+{
+/// ...
+	//Format(strPanel, 128, "Are you sure you want to set your queue points to 0?");
+	Format(strPanel, 128, "%T", "Turn To Zero Panel", client);
+/// ...
+	//Format(strPanel, 128, "YES");
+	Format(strPanel, 128, "%T", "YES", client);
+/// ...
+	//Format(strPanel, 128, "NO");
+	Format(strPanel, 128, "%T", "NO", client);
+/// ...
+}
+
+///
+public int TurnToZeroPanelH(Menu menu, MenuAction action, int param1, int param2)
+{
+/// ...
+	//CPrintToChat(param1, "{olive}[VSH 2]{default} You have reset your queue points to {olive}0{default}");
+	CPrintToChat(param1, "{olive}[VSH 2]{default} You have reset your queue points to {olive}0{default}");
+/// ...
+}
+
+///
+public Action SetNextSpecial(int client, int args)
+{
+/// ...
+	//bossmenu.SetTitle("Set Next Boss Type Menu: ");
+	//bossmenu.AddItem("-1", "None (Random Boss)");
+	char strPanel[128];
+	Format(strPanel, 128, "%T", "Set Next Boss Type Menu", client);
+	bossmenu.SetTitle(strPanel);
+	Format(strPanel, 128, "%T", "None (Random Boss)", client);
+	bossmenu.AddItem("-1", strPanel);
+/// ...
+}
+
+///
+public int MenuHandler_PickBossSpecial(Menu menu, MenuAction action, int client, int select)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Next Boss will be {olive}%s{default}!", bossname);
+	CPrintToChat(client, "%t", "Next Boss will be", bossname);
+/// ...
+}
+
+///
+public Action SetBossMenu(int client, int args)
+{
+/// ...
+	//bossmenu.SetTitle("Set Boss Menu: ");
+	//bossmenu.AddItem("-1", "None (Random Boss)");
+	char strPanel[128];
+	Format(strPanel, 128, "%T", "Set Boss Menu", client);
+	bossmenu.SetTitle(strPanel);
+	Format(strPanel, 128, "%T", "None (Random Boss)", client);
+	bossmenu.AddItem("-1", strPanel);
+/// ...
+}
+
+///
+public int MenuHandler_PickBosses(Menu menu, MenuAction action, int client, int select)
+{
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Your boss is set to {olive}%s{default}!", bossname);
+	CPrintToChat(client, "%t", "Your boss is set to", bossname);
+/// ...
+}
+
+///
+public void MusicTogglePanel(const int client)
+{
+/// ...
+	//panel.SetTitle("Turn the VS Saxton Hale 2 Music...");
+	//panel.DrawItem("On?");
+	//panel.DrawItem("Off?");
+	char strPanel[128];
+	Format(strPanel, 128, "%T", "Music activate", client);
+	bossmenu.SetTitle(strPanel);
+	Format(strPanel, 128, "%T", "On", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Off", client);
+	bossmenu.DrawItem(strPanel);
+/// ...
+}
+
+///
+public int MusicTogglePanelH(Menu menu, MenuAction action, int param1, int param2)
+{
+/// ...
+	//CPrintToChat(param1, "{olive}[VSH 2]{default} You've turned On the VS Saxton Hale 2 Music.");
+	CPrintToChat(param1, "%t", "Music on msg");
+/// ...
+	//CPrintToChat(param1, "{olive}[VSH 2]{default} You've turned Off the VS Saxton Hale 2 Music.");
+	CPrintToChat(param1, "%t", "Music off msg");
+/// ...
+}
+
+///
+public Action ForceBossRealtime(int client, int args)
+{
+/// ...
+	//CPrintToChat(player.index, "{olive}[VSH 2]{orange} an Admin has forced you to be a Boss!");
+	CPrintToChat(player.index, "%t", "You forced to be a Boss");
+/// ...
+}
+
+///
+public Action HelpPanelCmd(int client, int args)
+{
+/// ...
+	//panel.SetTitle("What do you want, sir?");
+	//panel.DrawItem("Show Boss health. (/halehp)");
+	//panel.DrawItem("Show help about my class.");
+	//panel.DrawItem("Who is the next Boss? (/halenext)");
+	//panel.DrawItem("Reset my Queue Points. (/resetq)");
+	//panel.DrawItem("Set My Preferred Boss. (/setboss)");
+	//panel.DrawItem("Turn Off/On the Background Music. (/halemusic)");
+	
+	char strPanel[128];
+	Format(strPanel, 128, "%T", "Help panel Title", client);
+	bossmenu.SetTitle(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Boss health", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Class", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Next boss", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Reset queue", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Set boss", client);
+	bossmenu.DrawItem(strPanel);
+	Format(strPanel, 128, "%T", "Help panel Music", client);
+	bossmenu.DrawItem(strPanel);
+/// ...
+}
+
+///
+public int HelpPanelH(Menu menu, MenuAction action, int param1, int param2)
+{
+/// ...
+	//else CPrintToChat(param1, "{olive}[VSH 2]{default} There are no active bosses...");
+	else CPrintToChat(param1, "{olive}[VSH 2]{default} There are no active bosses...");
+/// ...
+}
+
+///
+public int MenuHandler_ClassRush(Menu menu, MenuAction action, int client, int pick)
+{
+/// ...
+	//CPrintToChat(i, "{olive}[VSH 2]{default} You've been forced to {orange}%s{default}.", classname);
+	CPrintToChat(i, "{olive}[VSH 2]{default} You've been forced to {orange}%s{default}.", classname);
+/// ...
+}
+
+///modules/events.sp
+
+///
+public Action RoundStart(Event event, const char[] name, bool dontBroadcast)
+{
+/// ...
+	//CPrintToChatAll("{olive}[VSH 2]{default} Need more Players to Commence");
+	CPrintToChatAll("%t", "Need more Players to Commence");
+/// ...
+	//CPrintToChatAll("{olive}[VSH 2]{default} Normal Round while Everybody is Loading");
+	CPrintToChatAll("%t", "Normal Round while Everybody is Loading");
+/// ...
+	//CPrintToChatAll("{olive}[VSH 2]{default} Boss client index was Invalid. Need more Players to Commence");
+	CPrintToChatAll("%t", "Boss client index was Invalid. Need more Players to Commence");
+/// ...
+}
+
 
 
 

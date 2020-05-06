@@ -3,7 +3,7 @@
 	"Late spawn blocked"
 	{
 		"en"	"{olive}[VSH 2]{default} Late Spawn Blocked"
-		"ru"	"{olive}[VSH 2]{default} Заблоеировано возрождение посреди раунда"
+		"ru"	"{olive}[VSH 2]{default} Заблокировано возрождение посреди раунда"
 	}
 	"Block suicide"
 	{
@@ -31,8 +31,7 @@
 	{
 		"#format"	"{1:i}"
 		"en"	"{olive}[VSH 2] Queue{default} You scored {1} points."
-		"ru"	"{olive}[VSH 2] 
-		"en"	"{olive}[VSH 2] Queue{default} Вы заработали {1} очко(в)."{default} You scored {1} points."
+		"ru"	"{olive}[VSH 2] Очередь{default} вы заработали {1} очков."
 	}
 	"Panel title next boss"
 	{
@@ -83,9 +82,8 @@
 	}
 	"End of Round"
 	{
-		"#format"	"{1:s}"
-		"en"	"{olive}[VSH 2] End of Round{default} {1}"
-		"ru"	"{olive}[VSH 2] Конец раунда{default} {1}"
+		"en"	"{olive}[VSH 2] End of Round{default}"
+		"ru"	"{olive}[VSH 2] Конец раунда{default}"
 	}
 	"Boss Health Check"
 	{
@@ -93,17 +91,192 @@
 		"en"	"{olive}[VSH 2] {axis}Boss Health Check{default} {1}"
 		"en"	"{olive}[VSH 2] {axis}Проверка здоровья босса{default} {1}"
 	}
+	"Boss Health Check Timer"
+	{
+		"#format"	"{1:i},{2:s}"
+		"en"	"{olive}[VSH 2]{default} You cannot see the Boss HP now (wait {1} seconds). Last known total boss health was {2}."
+	}
+	"Players are left"
+	{
+		"#format"	"{1:i}"
+		"en"	"{1} players are left; control point enabled!"
+		"ru"	"Осталось {1} игроков; контрольная точка активирована!"
+	}
+	"Boss soon"
+	{
+		"en"	"{olive}[VSH 2]{default} You are going to be a Boss soon! Type {olive}/halenext{default} to check/reset your queue points & !setboss to set your boss."
+		"ru"	"{olive}[VSH 2]{default} Вы скоро станете боссом! Введите {olive}/halenext{default} чтобы проверить/сбросить ваши очки очереди и !setboss чтобы выбрать босса."
+	}
+	"Queue set 0"
+	{
+		"en"	"{olive}[VSH 2]{default} Your Queue has been set to 0!"
+		"ru"	"{olive}[VSH 2]{default} Вы обнулили свои очки очереди!"
+	}
+	"VSH2 Boss Queue"
+	{
+		"en"	"VSH2 Boss Queue:"
+		"ru"	"VSH2 Очередь боссов:"
+	}
+	"None"
+	{
+		"en"	"None"
+		"ru"	"Ничего"
+	}
+	"Get Queue Points"
+	{
+		"#format"	"{1:i}"
+		"en"	"Your queue points: {1} (select to set to 0)"
+		"ru"	"Ваши очки очереди: {1} (выберите чтобы обнулить)"
+	}
+	"Turn To Zero Panel"
+	{
+		"en"	"Are you sure you want to set your queue points to 0?"
+		"ru"	"Вы уверены, что хотите обнулить очки очереди?"
+	}
+	"Yes"
+	{
+		"en"	"Yes"
+		"ru"	"Да"
+	}
+	"No"
+	{
+		"en"	"No"
+		"ru"	"Нет"
+	}
+	"Reset To Zero Msg"
+	{
+		"en"	"{olive}[VSH 2]{default} You have reset your queue points to {olive}0{default}"
+		"ru"	"{olive}[VSH 2]{default} Вы {olive}обнулили{default} свои очки очереди"
+	}
+	"Set Next Boss Type Menu"
+	{
+		"en"	"Set Next Boss Type Menu:"
+		"ru"	"Выберите следующего босса:"
+	}
+	"Set Boss Menu"
+	{
+		"en"	"Set Boss Menu: "
+		"ru"	"Меню выбора босса"
+	}
+	"None (Random Boss)"
+	{
+		"en"	"None (Random Boss)"
+		"ru"	"Ничего (Случайный босс)"
+	}
+	"Next Boss will be"
+	{
+		"#format"	"{1:s}"
+		"en"	"{olive}[VSH 2]{default} Next Boss will be {olive}{1}{default}!"
+		"ru"	"{olive}[VSH 2]{default} Следующим боссом будет {olive}{1}{default}!"
+	}
+	"Your boss is set to"
+	{
+		"#format"	"{1:s}"
+		"en"	"{olive}[VSH 2]{default} Your boss is set to {olive}{1}{default}!"
+		"ru"	"{olive}[VSH 2]{default} Вы выбрали босса {olive}{1}{default}!"
+	}
+	"Music activate"
+	{
+		"en"	"Turn the VS Saxton Hale 2 Music..."
+		"ru"	"Переключить музыку из VSH2..."
+	}
+	"On"
+	{
+		"en"	"On?"
+		"ru"	"Вкл"
+	}
+	"Off"
+	{
+		"en"	"Off?"
+		"ru"	"Выкл"
+	}
+	"Music on msg"
+	{
+		"en"	"{olive}[VSH 2]{default} You've turned On the VS Saxton Hale 2 Music."
+		"ru"	"{olive}[VSH 2]{default} Вы включили музыку из VSH2."
+	}
+	"Music off msg"
+	{
+		"en"	"{olive}[VSH 2]{default} You've turned Off the VS Saxton Hale 2 Music."
+		"ru"	"{olive}[VSH 2]{default} Вы выключили музыку из VSH2."
+	}
+	"You forced to be a Boss"
+	{
+		"en"	"{olive}[VSH 2]{orange} an Admin has forced you to be a Boss!"
+		"ru"	"{olive}[VSH 2]{orange} Администратор сделал вас боссом!"
+	}
+	"Help panel Title"
+	{
+		"en"	"What do you want, sir?"
+		"ru"	"Что вас интересует?"
+	}
+	"Help panel Boss health"
+	{
+		"en"	"Show Boss health. (/halehp)"
+		"ru"	"Показать здоровье босса. (/halehp)"
+	}
+	"Help panel Class"
+	{
+		"en"	"Show help about my class."
+		"ru"	"Показать помощь о моём классе."
+	}
+	"Help panel Next boss"
+	{
+		"en"	"Who is the next Boss? (/halenext)"
+		"ru"	"Кто следующий босс? (/halenext)"
+	}
+	"Help panel Reset queue"
+	{
+		"en"	"Reset my Queue Points. (/resetq)"
+		"ru"	"Сбросить очки здоровья. (/resetq)"
+	}
+	"Help panel Set boss"
+	{
+		"en"	"Set My Preferred Boss. (/setboss)"
+		"ru"	"Выбрать босса. (/setboss)"
+	}
+	"Help panel Music"
+	{
+		"en"	"Turn Off/On the Background Music. (/halemusic)"
+		"ru"	"Вкл/выкл фоновую музыку. (/halemusic)"
+	}
+	"There are no active bosses"
+	{
+		"en"	"{olive}[VSH 2]{default} There are no active bosses..."
+		"ru"	"{olive}[VSH 2]{default} Сейчас нет доступных боссов.."
+	}
+	"Classrush msg"
+	{
+		"#format"	"{1:s}"
+		"en"	"{olive}[VSH 2]{default} You've been forced to {orange}{1}{default}."
+		"ru"	"{olive}[VSH 2]{default} Вам сменили класс на {orange}{2}{default}."
+	}
+	"Need more Players to Commence"
+	{
+		"en"	"{olive}[VSH 2]{default} Need more Players to Commence"
+		"ru"	"{olive}[VSH 2]{default} Нужно больше людей для игры"
+	}
+	"Normal Round while Everybody is Loading"
+	{
+		"en"	"{olive}[VSH 2]{default} Normal Round while Everybody is Loading"
+		"ru"	"{olive}[VSH 2]{default} Нормальный раунд. Ждем пока все подключатся"
+	}
+	"Boss client index was Invalid. Need more Players to Commence"
+	{
+		"en"	"{olive}[VSH 2]{default} Boss client index was Invalid. Need more Players to Commence"
+		"ru"	"{olive}[VSH 2]{default} Неверный индекс игрока (босса). Нужно больше людей для игры"
+	}
 	"OnMessageIntro 1 life"
 	{
-		"#format" "{1:s},{2:N},{3:s},{4:i}"
-		"en"	"{1}\n{2} has become {3} with {4} Health"
-		"ru"	"{1}\n{2} становится {3} с {4} Здоровья"
+		"#format" "{1:N},{2:s},{3:i}"
+		"en"	"{1} has become {2} with {3} Health"
+		"ru"	"{1} становится {2} с {3} Здоровья"
 	}
 	"OnMessageIntro multilive"
 	{
-		"#format" "{1:s},{2:N},{3:s},{4:i},{5:i}"
-		"en"	"{1}\n{2} has become {3} with {4} Health and {5} lives"
-		"ru"	"{1}\n{2} становится {3} с {4} Здоровья и {5} жизнями"
+		"#format" "{1:N},{2:s},{3:i},{4:i}"
+		"en"	"{1} has become {2} with {3} Health and {4} lives"
+		"ru"	"{1} становится {2} с {3} Здоровья и {4} жизнями"
 	}
 	"OnBossHealthCheck self 1 life"
 	{
@@ -119,32 +292,97 @@
 	}
 	"OnBossHealthCheck not self 1 life"
 	{
-		"#format"	"{1:s},{2:s},{3:i},{4:i}"
-		"en"	"{1}\n{2}'s current health is: {3} of {4}"
-		"ru"	"{1}\nТекущее здоровье {2}: {3} из {4}"
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"	"{1}'s current health is: {2} of {3}"
+		"ru"	"Текущее здоровье {1}: {2} из {3}"
 	}
 	"OnBossHealthCheck not self multilive"
 	{
-		"#format"	"{1:s},{2:s},{3:i},{4:i},{5:i}"
-		"en"	"{1}\n{1}'s current health is: {3} and ({4} x {5})"
-		"ru"	"{1}\nТекущее здоровье {2}: {3} и ({4} x {5})"
+		"#format"	"{1:s},{2:i},{3:i},{4:i}"
+		"en"	"{1}'s current health is: {2} and ({3} x {4})"
+		"ru"	"Текущее здоровье {1}: {2} и ({3} x {4})"
 	}
 	"OnRoundEndInfo 1 life"
 	{
-		"#format"	"{1:s},{2:s},{3:N},{4:i}"
-		"en"	"{1}\n{2} ({3}) had {4} health left."
-		"ru"	"{1}\n{2} ({3}) остался с {4} ОЗ."
+		"#format"	"{1:s},{2:N},{3:i}"
+		"en"	"{1} ({2}) had {3} health left."
+		"ru"	"{1} ({2}) остался с {3} ОЗ."
 	}
 	"OnRoundEndInfo multilive"
 	{
-		"#format"	"{1:s},{2:s},{3:N},{4:i}, {5:i}, {6:i}"
-		"en"	"{1}\n{2} ({3}) had {4} ( and {5} x {6}) health left."
-		"ru"	"{1}\n{2} ({3}) остался с {4} ОЗ и {6} жизней по {5} ОЗ."
+		"#format"	"{1:s},{1:s},{2:N},{3:i}, {4:i}, {5:i}"
+		"en"	"{1} ({2}) had {3} ( and {4} x {5}) health left."
+		"ru"	"{1} ({2}) остался с {3} ОЗ и {5} жизней по {4} ОЗ."
 	}
 	"Exit"
 	{
 		"en"	"Exit"
 		"ru"	"Выход"
+	}
+	"HUD damage and damage"
+	{
+		"#format"	"{1:i},{2:N},{3:i}"
+		"en"	"Damage: {1} - {2}'s Damage: {3}"
+		"ru"	"Урон: {1} - Урон игрока {2}: {3}"
+	}
+	"HUD damage"
+	{
+		"#format"	"{1:i}"
+		"en"	"Damage: {1}"
+		"ru"	"Урон: {1}"
+	}
+	"HUD damage and lives"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"	"Damage: {1} | Lives: {2}"
+		"ru"	"Урон: {1} | Жизни: {2}"
+	}
+	"HUD spy feign-death ready"
+	{
+		"en"	"Status: Feign-Death Ready"
+		"ru"	"Статус: Имитация смерти готова"
+	}
+	"HUD spy dead-ringered"
+	{
+		"en"	"Status: Dead-Ringered"
+		"ru"	"Статус: Имитация смерти активна"
+	}
+	"HUD spy inactive"
+	{
+		"en"	"Status: Inactive"
+		"ru"	"Статус: Неактивно"
+	}
+	"HUD kunai ready"
+	{
+		"en"	"Kunai: Ready"
+		"ru"	"Кунай: Готов"
+	}
+	"HUD kunai none"
+	{
+		"en"	"Kunai: None"
+		"ru"	"Кунай: Отсутствует"
+	}
+	"HUD Ubercharge"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"	"{1}\nUbercharge: {2}%"
+		"ru"	"{1}\nУберзаряд: {2}%"
+	}
+	"HUD Air Strike Damage"
+	{
+		"#format"	"{1:i}"
+		"en"	"Air Strike Damage: {1}"
+		"ru"	"Урон Авиаудара: {1}"
+	}
+	"HUD Shield Active"
+	{
+		"en"	"Shield: Active"
+		"ru"	"Щит: Активен"
+	}
+	"HUD Shield Gone"
+	{
+		"en"	"Shield: Gone"
+		"ru"	"Щит: Сломан"
 	}
 	"HUD Jump and rage percent"
 	{
@@ -165,35 +403,5 @@
 	{
 		"#format"	"{1:i}"
 		"en"	"Teleport: {1}% | Rage: FULL"
-	}
-	"Saxton Hale"
-	{
-		"en"	"Saxton Hale:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (stun): taunt when the Rage is full to stun nearby enemies."
-		"ru"	"Сакстон Хейл:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (оглушение): сделай насмешку, когда Счетчик Ярости полон."
-	}
-	"The Vagineer"
-	{
-		"en"	"Vagineer:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Uber): taunt when the Rage Meter is full to stun fairly close-by enemies."
-		"ru"	"Вагинер:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Убер): сделай насмешку, когда Счетчик Ярости полон."
-	}
-	"The Christian Brutal Sniper"
-	{
-		"en"	"Christian Brutal Sniper:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Huntsman Bow): taunt when Rage is full (9 arrows).\nVery close-by enemies are stunned."
-		"ru"	"Христианский Брутальный Снайпер:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Лук): сделай насмешку, когда Счетчик Ярости полон (до 9 стрел)."
-	}
-	"The Horseless Headless Horsemann Jr."
-	{
-		"en"	"Horseless Headless Horsemann Jr.:\nTeleporter: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (stun): taunt when Rage is full to stun nearby enemies."
-		"ru"	"Безголовый Безлошадный Всадник Мл.:\nТелепортация: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (оглушение): сделай насмешку, когда Счетчик Ярости полон."
-	}
-	"The Easter Bunny"
-	{
-		"en"	"The Easter Bunny:\nI think he wants to give out candy? Maybe?\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Happy Easter, Fools): taunt when Rage Meter is full.\nNearby enemies are stunned."
-		"ru"	"Пасхальный Кролик:\nЯ думаю, что он хочет поделиться конфетами? Может быть?\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (С Пасхой, дурни): сделай насмешку, когда Счетчик Ярости полон (Гранатомёт)."
-	}
-	"The Plague Doctor"
-	{
-		"en"	"Plague Doctor: Kill enemies and turn them into loyal Zombies!\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Powerup Minions): taunt when Rage is full to give powerups to your Zombies."
-		"ru"	"Чумной Доктор: Убивай врагов, чтобы сделать из них лояльных зомби.\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Усиление миньонов): сделай насмешку, когда Счетчик Ярости полон, чтобы усилить своих зомби."
 	}
 }

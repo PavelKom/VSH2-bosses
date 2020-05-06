@@ -1,0 +1,68 @@
+"Phrases"
+{	
+	"Saxton Hale"
+	{
+		"en"	"Saxton Hale"
+		"ru"	"Сакстон Хейл"
+	}
+	"Saxton Hale help"
+	{
+		"en"	"Saxton Hale:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (stun): taunt when the Rage is full to stun nearby enemies."
+		"ru"	"Сакстон Хейл:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (оглушение): сделай насмешку, когда Счетчик Ярости полон."
+	}
+	
+	"The Vagineer"
+	{
+		"en"	"The Vagineer"
+		"ru"	"Вагинер"
+	}
+	"The Vagineer help"
+	{
+		"en"	"Vagineer:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Uber): taunt when the Rage Meter is full to stun fairly close-by enemies."
+		"ru"	"Вагинер:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Убер): сделай насмешку, когда Счетчик Ярости полон."
+	}
+	
+	"The Christian Brutal Sniper"
+	{
+		"en"	"The Christian Brutal Sniper"
+		"ru"	"Христианский Брутальный Снайпер"
+	}
+	"The Christian Brutal Sniper help"
+	{
+		"en"	"Christian Brutal Sniper:\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Huntsman Bow): taunt when Rage is full (9 arrows).\nVery close-by enemies are stunned."
+		"ru"	"Христианский Брутальный Снайпер:\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Лук): сделай насмешку, когда Счетчик Ярости полон (до 9 стрел)."
+	}
+	
+	"The Horseless Headless Horsemann Jr."
+	{
+		"en"	"The Horseless Headless Horsemann Jr."
+		"ru"	"Пеший всадник без головы Мл."
+	}
+	"The Horseless Headless Horsemann Jr. help"
+	{
+		"en"	"Horseless Headless Horsemann Jr.:\nTeleporter: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (stun): taunt when Rage is full to stun nearby enemies."
+		"ru"	"Пеший всадник без головы Мл.:\nТелепортация: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (оглушение): сделай насмешку, когда Счетчик Ярости полон."
+	}
+	
+	"The Easter Bunny"
+	{
+		"en"	"The Easter Bunny"
+		"ru"	"Пасхальный Кролик"
+	}
+	"The Easter Bunny help"
+	{
+		"en"	"The Easter Bunny:\nI think he wants to give out candy? Maybe?\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Happy Easter, Fools): taunt when Rage Meter is full.\nNearby enemies are stunned."
+		"ru"	"Пасхальный Кролик:\nЯ думаю, что он хочет поделиться конфетами? Может быть?\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (С Пасхой, дурни): сделай насмешку, когда Счетчик Ярости полон (Гранатомёт)."
+	}
+	
+	"The Plague Doctor"
+	{
+		"en"	"The Plague Doctor"
+		"ru"	"Чумной Доктор"
+	}
+	"The Plague Doctor help"
+	{
+		"en"	"Plague Doctor: Kill enemies and turn them into loyal Zombies!\nSuper Jump: crouch, look up and stand up.\nWeigh-down: in midair, look down and crouch\nRage (Powerup Minions): taunt when Rage is full to give powerups to your Zombies."
+		"ru"	"Чумной Доктор: Убивай врагов, чтобы сделать из них лояльных зомби.\nСупер Прыжок: альт.огонь, посмотри наверх и встань.\nСупер-падение: в воздухе смотри вниз и присядь.\nЯрость (Усиление миньонов): сделай насмешку, когда Счетчик Ярости полон, чтобы усилить своих зомби."
+	}
+}
