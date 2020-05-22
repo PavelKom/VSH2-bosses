@@ -101,8 +101,8 @@ public Action ManageOnBossTakeDamage(const BaseBoss victim, int& attacker, int& 
 	PrintCenterText(attacker, "%t", "OnStabbed attacker", boss_name);
 	PrintCenterText(victim.index, "%t", "OnStabbed victim");
 /// ...
-	PrintCenterText(attacker, "You Market Gardened %s!", name);
-	PrintCenterText(victim.index, "You Were Just Market Gardened!");
+	PrintCenterText(attacker, "%t", "Market Gardened attacker", name);
+	PrintCenterText(victim.index, "%t", "Market Gardened victim");
 /// ...
 }
 
@@ -148,8 +148,8 @@ stock void MessageConstructor(ArrayList bosses, char[] eventType)
 		msg[0] = '\0';
 		for( i=0; i<len; ++i ) {
 			base = bosses.Get(i);
-			if( base == view_as< BaseBoss >(0) ) ///???
-				continue;						 ///???
+			if( base == view_as< BaseBoss >(0) )
+				continue;
 			
 			char name[MAX_BOSS_NAME_SIZE];
 			base.GetName(name);
@@ -194,7 +194,7 @@ stock void MessageConstructor(ArrayList bosses, char[] eventType)
 			ShowHudText(i, -1, "%s", msg);
 		}
 		
-		if(StrEqual(eventType, "end"))
+		else if(StrEqual(eventType, "end"))
 		{
 			CPrintToChat(i, "%t %s", "End of Round", msg);
 			SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
@@ -550,10 +550,3 @@ public Action RoundStart(Event event, const char[] name, bool dontBroadcast)
 	CPrintToChatAll("%t", "Boss client index was Invalid. Need more Players to Commence");
 /// ...
 }
-
-
-
-
-
-
-
