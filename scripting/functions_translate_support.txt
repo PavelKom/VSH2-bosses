@@ -1,4 +1,5 @@
 ///Rewrited function from VSH2 adding support for other languages
+///VSH2 "2.6.14"
 
 ///vsh2.sp
 
@@ -8,6 +9,7 @@ public void OnPluginStart()
 /// ...
 	LoadTranslations("vsh2.phrases");
 	LoadTranslations("vsh2bosses.phrases");
+	LoadTranslations("vsh2redhelp.phrases");
 /// ...
 }
 
@@ -101,6 +103,8 @@ public Action ManageOnBossTakeDamage(const BaseBoss victim, int& attacker, int& 
 	PrintCenterText(attacker, "%t", "OnStabbed attacker", boss_name);
 	PrintCenterText(victim.index, "%t", "OnStabbed victim");
 /// ...
+	//PrintCenterText(attacker, "You Market Gardened %s!", name);
+	//PrintCenterText(victim.index, "You Were Just Market Gardened!");
 	PrintCenterText(attacker, "%t", "Market Gardened attacker", name);
 	PrintCenterText(victim.index, "%t", "Market Gardened victim");
 /// ...
@@ -212,7 +216,6 @@ stock void MessageConstructor(ArrayList bosses, char[] eventType)
 public void ManageRoundEndBossInfo(ArrayList bosses, bool bossWon)
 {
 /// ...
-	//char round_end_msg[MAXMESSAGE];
 	//Format(round_end_msg, MAXMESSAGE, "%s\n%s (%N) had %i (of %i) health left.", round_end_msg, name, base.index, base.iHealth, base.iMaxHealth);
 	
 	///round_end_msg[0] != '\0' Only if we have alive bosses (or custom bosses rewrite round_end_msg)
@@ -370,11 +373,13 @@ public void QueuePanel(const int client)
 	Format(strBossList, MAXMESSAGE, "%T", "VSH2 Boss Queue", client);
 /// ...
 	//else panel.DrawItem("None");
-	Format(strBossList, MAXMESSAGE, "%T", "None", client);
-	else panel.DrawItem(strBossList);
+	else {
+		Format(strBossList, MAXMESSAGE, "%T", "None", client);
+		panel.DrawItem(strBossList);
+	}
 /// ...
 	//Format(strBossList, 64, "Your queue points: %i (select to set to 0)", BaseBoss(client).iQueue );
-	Format(strBossList, 64, "%T," "Get Queue Points", client, BaseBoss(client).iQueue );
+	Format(strBossList, 64, "%T", "Get Queue Points", client, BaseBoss(client).iQueue );
 /// ...
 }
 
@@ -398,7 +403,7 @@ public int TurnToZeroPanelH(Menu menu, MenuAction action, int param1, int param2
 {
 /// ...
 	//CPrintToChat(param1, "{olive}[VSH 2]{default} You have reset your queue points to {olive}0{default}");
-	CPrintToChat(param1, "{olive}[VSH 2]{default} You have reset your queue points to {olive}0{default}");
+	CPrintToChat(param1, "%t", "Reset To Zero Msg");
 /// ...
 }
 
@@ -457,11 +462,11 @@ public void MusicTogglePanel(const int client)
 	//panel.DrawItem("Off?");
 	char strPanel[128];
 	Format(strPanel, 128, "%T", "Music activate", client);
-	bossmenu.SetTitle(strPanel);
+	panel.SetTitle(strPanel);
 	Format(strPanel, 128, "%T", "On", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Off", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 /// ...
 }
 
@@ -500,19 +505,19 @@ public Action HelpPanelCmd(int client, int args)
 	
 	char strPanel[128];
 	Format(strPanel, 128, "%T", "Help panel Title", client);
-	bossmenu.SetTitle(strPanel);
+	panel.SetTitle(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Boss health", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Class", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Next boss", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Reset queue", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Set boss", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 	Format(strPanel, 128, "%T", "Help panel Music", client);
-	bossmenu.DrawItem(strPanel);
+	panel.DrawItem(strPanel);
 /// ...
 }
 
@@ -521,7 +526,7 @@ public int HelpPanelH(Menu menu, MenuAction action, int param1, int param2)
 {
 /// ...
 	//else CPrintToChat(param1, "{olive}[VSH 2]{default} There are no active bosses...");
-	else CPrintToChat(param1, "{olive}[VSH 2]{default} There are no active bosses...");
+	else CPrintToChat(param1, "%t", "There are no active bosses");
 /// ...
 }
 
@@ -530,7 +535,10 @@ public int MenuHandler_ClassRush(Menu menu, MenuAction action, int client, int p
 {
 /// ...
 	//CPrintToChat(i, "{olive}[VSH 2]{default} You've been forced to {orange}%s{default}.", classname);
-	CPrintToChat(i, "{olive}[VSH 2]{default} You've been forced to {orange}%s{default}.", classname);
+	CPrintToChat(i, "%t", "Classrush msg", classname);
+/// ...
+	//CPrintToChat(client, "{olive}[VSH 2]{default} Forced everybody to {orange}%s{default}.", classname);
+	CPrintToChat(client, "%t", "Classrush msg all", classname);
 /// ...
 }
 

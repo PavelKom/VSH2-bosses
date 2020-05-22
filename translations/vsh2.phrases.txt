@@ -251,6 +251,12 @@
 		"en"	"{olive}[VSH 2]{default} You've been forced to {orange}{1}{default}."
 		"ru"	"{olive}[VSH 2]{default} Вам сменили класс на {orange}{2}{default}."
 	}
+	"Classrush msg all"
+	{
+		"#format"	"{1:s}"
+		"en"	"{olive}[VSH 2]{default} Forced everybody to {orange}%s{default}."
+		"ru"	"{olive}[VSH 2]{default} Всем игрокам смене класс на {orange}{2}{default}."
+	}
 	"Need more Players to Commence"
 	{
 		"en"	"{olive}[VSH 2]{default} Need more Players to Commence"
