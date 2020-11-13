@@ -1,5 +1,5 @@
 import os
-import fnmatch 
+from pathlib import Path
 
 '''
 Python version
@@ -23,7 +23,7 @@ mapFastdl = "/var/www/<fastdl site folder>/html/maps/"
 mediaFastdl = ["/home/<username>/tf2/tf/sound/", "/home/<username>/tf2/tf/models/", "/home/<username>/tf2/tf/materials/"]
 linkcount = 0
 compresscount = 0
-
+"""
 for root, dirs, files in os.walk(mapFastdl):
 	for filename in files: 
 		if filename.endswith(('.nav', '.bsp')):
@@ -66,6 +66,35 @@ for mediaFolder in mediaFastdl:
 			print("Compress file: "+root+'/'+filename)
 			os.system(cmd)
 			compresscount += 1
+"""
+maps_fastdl_path = Path(mapFastdl)
+for file in maps_fastdl_path:
+	if file.match('*.bz2'):
+		continue
+	if not file.match('*.nav') and not file.match('*.bsp'):
+		continue
+	link_name = Path(str(file).replace(mapFastdl, mapfolder))
+	if not link_name.exists():
+		link_name.symlink_to(file)
+		linkcount += 1
+	if Path(file+'.bz2').exists():
+		continue
+	cmd = "bzip2 --compress --keep --best --quiet " + file
+	print("Compress file: " + file)
+	os.system(cmd)
+	compresscount += 1
+
+for i, media in enumerate(mediaFastdl):
+	media_fastdl_path = Path(media)
+	for file in media_fastdl_path:
+		if file.match('*.bz2') or file.is_dir():
+			continue
+		if Path(file + '.bz2').exists():
+			continue
+		cmd = "bzip2 --compress --keep --best --quiet " + file
+		print("Compress file: " + file)
+		os.system(cmd)
+		compresscount += 1
 
 print("Created symlinks: "+str(linkcount))
 print("Archived Files: "+str(compresscount))
